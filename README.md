@@ -35,3 +35,10 @@ provided a default for the local MySQL server, e.g.
 let user = process.env.DB_USER || "value for local MySQL";
 let password = process.env.DB_PASS || "pw for local MySQL";
 ```
+
+
+# On Google Cloud
+
+This repository is connected to google cloud and a new version of the backend
+will be built (service name: "backend") and hosted when a tag matching
+``^v[0-9]+$`` (e.g. ``v1``, ``v2``, ..., ``v12``) is pushed.
