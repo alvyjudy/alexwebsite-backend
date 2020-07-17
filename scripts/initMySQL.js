@@ -20,7 +20,8 @@ let init = () => {
   con.query(`
     CREATE TABLE Auth (
       userID int NOT NULL AUTO_INCREMENT,
-      email varchar(255) UNIQUE,
+      email varchar(255) NOT NULL UNIQUE,
+      passphrase varchar(255) NOT NULL,
       PRIMARY KEY (UserID)
     );`);
 
