@@ -7,7 +7,7 @@ module.exports = {
           [email],
           (err, results, fields) => {
             if (results[0]) {
-              resolve(results[0].email); //result[0].email is the email address string
+              resolve('email exist'); //result[0].email is the email address string
             } else {
               reject('email not found');
             }
@@ -36,10 +36,17 @@ module.exports = {
     );
   },
 
-  insertEmailPw: (Connection, email, passphrase) => {
-    Connection.query(`INSERT INTO Api.user (email, passphrase)
-    VALUES (?, ?);`,
-    [email, passphrase]
+  insertEmailPassphrase: (Connection, email, passphrase) => {
+    return new Promise (
+      (resolve, reject) => {
+        Connection.query(`INSERT INTO Api.Auth (email, passphrase)
+          VALUES (?, ?);`,
+          [email, passphrase],
+          (err, res, field) => {
+            resolve('registered!');
+          }
+        );
+      }
     );
   }
 }
