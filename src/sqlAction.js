@@ -25,7 +25,6 @@ module.exports = {
           [email],
           (err, results, fields) => {
             if (results[0].passphrase === passphrase) {
-              console.log(results);
               resolve(results[0].userID);
             } else {
               reject('passphrase incorrect');
@@ -42,10 +41,13 @@ module.exports = {
         Connection.query(`INSERT INTO Api.Auth (email, passphrase)
           VALUES (?, ?);`,
           [email, passphrase],
-          (err, res, field) => {
-            resolve('registered!');
-          }
+          (err, res, field) => {}
         );
+        Connection.query(`SELECT userID FROM Auth WHERE email = ?`,
+          [email],
+          (error, results, field) => {
+            resolve(results[0].userID);
+          })
       }
     );
   }
