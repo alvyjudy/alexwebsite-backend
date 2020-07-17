@@ -11,12 +11,12 @@ var con = mysql.createConnection(
   }
 );
 
-let init = async () => {
-  await con.connect();
-  await con.query("DROP DATABASE IF EXISTS Api;");
-  await con.query("CREATE DATABASE Api;");
-  await con.query("USE Api;");
-  await con.query("CREATE TABLE user (email varchar(255), pw varchar(255));");
+let init = () => {
+  con.connect();
+  con.query("DROP DATABASE IF EXISTS Api;");
+  con.query("CREATE DATABASE Api;");
+  con.query("USE Api;");
+  con.query("CREATE TABLE user (email varchar(255), pw varchar(255));");
   con.end();
 }
 
