@@ -41,9 +41,40 @@ app.post("/api/login/",
 app.post('/api/register',
   express.json(),
   (req, res) => {
-    let email = req.body.username;
-    let pw = req.body.password;
+    var email = req.body.email;
+    var passphrase = req.body.passphrase;
+    var Register = sqlAction.checkIfEmailExists(sqlCon, email)
+      .then(
+        (value) => {
+          res.status(400).send("email already registered");
+          throw "error";
+        },
+        (value) => {
+          return sqlAction.insertEmailPassphrase(sqlCon, email, passphrase);
+        }
+      )
+      .then(
+        (value) => {
+          res.status(200).send(
+            {'authenticated': true,
+            'message': 'new user registered'}
+          );
+        }
+      )
+      .catch(console.log)
 
+
+/*
+      .then(
+
+      )
+      .catch(
+        (value) => {
+          console.log("hello");
+          res.status(400).send("error");
+        }
+      );
+*/
   }
 );
 
