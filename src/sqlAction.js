@@ -1,14 +1,13 @@
 module.exports = {
-  checkIfEmailExists: (Connection, res, email) => {
+  checkIfEmailExists: (Connection, email) => {
     return new Promise (
       (resolve, reject) => {
         Connection.query(
-          `SELECT email FROM Api.user WHERE Api.user.email = ?`,
+          `SELECT email FROM Auth WHERE Api.Auth.email = ?`,
           [email],
           (err, results, fields) => {
-
             if (results[0]) {
-              resolve(Cresults[0].email); //result[0].email is the email address string
+              resolve(results[0].email); //result[0].email is the email address string
             } else {
               reject('email not found');
             }
@@ -22,10 +21,12 @@ module.exports = {
     return new Promise (
       (resolve, reject) => {
         Connection.query(
-          `SELECT pw FROM Api.user`,
+          `SELECT passphrase, userID FROM Auth WHERE email = ?`,
+          [email],
           (err, results, fields) => {
             if (results[0].passphrase === passphrase) {
-              resolve('passphrase correct');
+              console.log(results);
+              resolve(results[0].userID);
             } else {
               reject('passphrase incorrect');
             }
