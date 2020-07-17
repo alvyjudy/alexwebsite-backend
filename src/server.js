@@ -1,36 +1,58 @@
-const express = require("express");
-const path = require("path");
-const mysql= require("mysql");
+var express = require("express");
+var path = require("path");
+var mysql= require("mysql");
+var sqlAction = require("./sqlAction.js");
+var app = express();
 
-const app = express();
-
-const auth = {
+var auth = {
   host: process.env.SQLHOST || 'localhost',
   user: process.env.SQLUSER || 'root',
   password: process.env.SQLPW || '12345678'
 }
 
-let sqlCon = mysql.createConnection(auth);
+var sqlCon = mysql.createConnection(auth);
 sqlCon.connect();
+sqlCon.query(`USE Api;`);
 
 
-app.get("/api/", (req, res) => {
-  res.send("hello");
-});
+app.post("/api/login/",
+  express.json(),
+  (req, res) => {
+    var email = req.body.email;
+    var passphrase = req.body.passphrase;
+    sqlAction.checkIfEmailExists(sqlCon, email)
+      .then(
+        (result) => {return sqlAction.checkIfPwCorrect(sqlCon, email, passphrase)}
+      )
+      .then((value) => {res.status(200).send(
+        {'authenticated': true,
+          'userID': value
+        });
+      })
+      .catch((value) => {
+        res.status(401).send(
+          {'authenticated': false,
+        'message': 'password incorrect'}
+        )
+      });
+  }
+);
 
 app.post('/api/register',
   express.json(),
-  async (req, res) => {
-    let username = req.body.username;
+  (req, res) => {
+    let email = req.body.username;
     let pw = req.body.password;
-    sqlCon.query(`INSERT INTO Api.user (email, pw)
-      VALUES (?, ?);`,
-      [username, pw],
-      () => {
-        res.send("done");
-      }
-    );
+
   }
 );
+
+app.post("/api/items", //
+  express.json(),
+  (req, res) => {}
+);
+
+app.get("/api/items");
+
 
 app.listen(process.env.PORT || 3002);
