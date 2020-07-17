@@ -2,6 +2,7 @@ var express = require("express");
 var path = require("path");
 var mysql= require("mysql");
 var sqlAction = require("./sqlAction.js");
+var session = require("express-session");
 var app = express();
 
 var auth = {
@@ -14,6 +15,11 @@ var sqlCon = mysql.createConnection(auth);
 sqlCon.connect();
 sqlCon.query(`USE Api;`);
 
+app.use(session({
+  secret:"development_secret",
+  resave:true,
+  saveUninitialized: true
+}));
 
 app.post("/api/login/",
   express.json(),
@@ -24,10 +30,11 @@ app.post("/api/login/",
       .then(
         (result) => {return sqlAction.checkIfPwCorrect(sqlCon, email, passphrase)}
       )
-      .then((value) => {res.status(200).send(
-        {'authenticated': true,
-          'userID': value
-        });
+      .then((value) => {
+        req.session.user=value
+        res.status(200).send(
+          {'authenticated': true
+          });
       })
       .catch((value) => {
         res.status(401).send(
@@ -55,6 +62,8 @@ app.post('/api/register',
       )
       .then(
         (value) => {
+          req.session.user = value
+          console.log('value', value);
           res.status(200).send(
             {'authenticated': true,
             'message': 'new user registered'}
@@ -62,8 +71,24 @@ app.post('/api/register',
         },
         console.log
       )
+  }
+);
 
+app.get('/api/session',
+  (req, res) => {
+    if (req.session.user) {
+      res.send("logged in");
+    } else {
+      res.send("logged out");
+    }
+  }
+);
 
+app.post('/api/logout',
+  (req, res) => {
+    req.session.destroy(()=>{res.send('loggedout')});
+  }
+)
 /*
       .then(
 
@@ -75,8 +100,6 @@ app.post('/api/register',
         }
       );
 */
-  }
-);
 
 app.post("/api/items", //
   express.json(),
