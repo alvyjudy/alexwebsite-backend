@@ -47,7 +47,7 @@ app.post('/api/register',
       .then(
         (value) => {
           res.status(400).send("email already registered");
-          throw "error";
+          return new Promise((res, rej)=> {rej('already registered');});
         },
         (value) => {
           return sqlAction.insertEmailPassphrase(sqlCon, email, passphrase);
