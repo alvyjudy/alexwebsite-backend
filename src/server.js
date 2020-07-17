@@ -59,9 +59,9 @@ app.post('/api/register',
             {'authenticated': true,
             'message': 'new user registered'}
           );
-        }
+        },
+        console.log
       )
-      .catch(console.log)
 
 
 /*
