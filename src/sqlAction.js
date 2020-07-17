@@ -18,16 +18,16 @@ module.exports = {
     );
   },
 
-  checkIfPwCorrect: (Connection, email, pw) => {
+  checkIfPwCorrect: (Connection, email, passphrase) => {
     return new Promise (
       (resolve, reject) => {
         Connection.query(
           `SELECT pw FROM Api.user`,
           (err, results, fields) => {
-            if (results[0].pw === pw) {
-              resolve('password correct');
+            if (results[0].passphrase === passphrase) {
+              resolve('passphrase correct');
             } else {
-              reject('password incorrect');
+              reject('passphrase incorrect');
             }
           }
         );
@@ -35,10 +35,10 @@ module.exports = {
     );
   },
 
-  insertEmailPw: (Connection, username, pw) => {
-    Connection.query(`INSERT INTO Api.user (email, pw)
+  insertEmailPw: (Connection, email, passphrase) => {
+    Connection.query(`INSERT INTO Api.user (email, passphrase)
     VALUES (?, ?);`,
-    [username, pw]
+    [email, passphrase]
     );
   }
 }

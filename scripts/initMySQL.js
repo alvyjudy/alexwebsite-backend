@@ -16,7 +16,7 @@ let init = () => {
   con.query("DROP DATABASE IF EXISTS Api;");
   con.query("CREATE DATABASE Api;");
   con.query("USE Api;");
-  con.query("CREATE TABLE user (email varchar(255), pw varchar(255));");
+  con.query("CREATE TABLE user (email varchar(255), passphrase varchar(255));");
   con.end();
 }
 
