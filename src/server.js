@@ -31,7 +31,7 @@ app.post("/api/login/",
         (result) => {return sqlAction.checkIfPwCorrect(sqlCon, email, passphrase)}
       )
       .then((value) => {
-        req.session.user=value
+        req.session.user=value;
         res.status(200).send(
           {'authenticated': true
           });
@@ -62,7 +62,7 @@ app.post('/api/register',
       )
       .then(
         (value) => {
-          req.session.user = value
+          req.session.user = value;
           console.log('value', value);
           res.status(200).send(
             {'authenticated': true,
@@ -101,12 +101,6 @@ app.post('/api/logout',
       );
 */
 
-app.post("/api/items", //
-  express.json(),
-  (req, res) => {}
-);
-
-app.get("/api/items");
 
 
 app.listen(process.env.PORT || 3002);
