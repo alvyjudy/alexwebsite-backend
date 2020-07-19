@@ -11,12 +11,47 @@ var con = mysql.createConnection(
   }
 );
 
-let init = async () => {
-  await con.connect();
-  await con.query("DROP DATABASE IF EXISTS Api;");
-  await con.query("CREATE DATABASE Api;");
-  await con.query("USE Api;");
-  await con.query("CREATE TABLE user (email varchar(255), pw varchar(255));");
+let init = () => {
+  con.connect();
+  con.query("DROP DATABASE IF EXISTS Api;");
+  con.query("CREATE DATABASE Api;");
+  con.query("USE Api;");
+
+  con.query(`
+    CREATE TABLE Auth (
+      userID int NOT NULL AUTO_INCREMENT,
+      email varchar(255) NOT NULL UNIQUE,
+      passphrase varchar(255) NOT NULL,
+      PRIMARY KEY (UserID)
+    );`);
+
+  con.query(`
+    CREATE TABLE Cart (
+      itemFilename varchar(255) NOT NULL,
+      userID int NOT NULL,
+      FOREIGN KEY (userID) REFERENCES Auth(userID)
+    );
+  `);
+
+  con.query(`
+    CREATE TABLE Orders (
+      orderID int NOT NULL AUTO_INCREMENT,
+      userID int NOT NULL,
+      PRIMARY KEY (orderID),
+      FOREIGN KEY (userID) REFERENCES Auth(userID)
+    );
+    `);
+
+  con.query(`
+    CREATE TABLE OrderedItem (
+      itemFilename varchar(255) NOT NULL,
+      orderID int NOT NULL,
+      FOREIGN KEY (orderID) REFERENCES Orders(orderID)
+    );
+    `);
+
+
+
   con.end();
 }
 
