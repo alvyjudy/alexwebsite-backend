@@ -50,5 +50,30 @@ module.exports = {
           })
       }
     );
-  }
+  },
+
+  addItemToCart: (Connection, itemFilename, userID)=>{
+    return new Promise (
+      (resolve, reject) => {
+        Connection.query(`INSERT INTO Api.Cart (itemFilename, userID)
+          VALUES (?, ?);`,
+          [itemFilename, userID],
+          (err, res, field) => {
+            if (!err) {
+              resolve('done');
+            } else {
+              reject(err);
+            }
+          }
+        )
+      }
+    );
+
+  },
+
+  rmItemFromCart:()=>{},
+
+  getUserCart:()=>{},
+
+
 }
