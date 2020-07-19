@@ -28,7 +28,9 @@ let init = () => {
     CREATE TABLE Cart (
       itemFilename varchar(255) NOT NULL,
       userID int NOT NULL,
-      FOREIGN KEY (userID) REFERENCES Auth(userID)
+      itemCount int NOT NULL,
+      FOREIGN KEY (userID) REFERENCES Auth(userID),
+      UNIQUE KEY (itemFilename, userID)
     );
   `);
 
