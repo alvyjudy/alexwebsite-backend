@@ -75,9 +75,47 @@ module.exports = {
 
   },
 
-  rmItemFromCart:()=>{},
+  rmItemFromCart: (Connection, itemFilename, userID)=>{
+    //Remove an item entry (not just the count) from the database
+    return new Promise (
+      (resolve, reject) => {
+        Connection.query(`DELETE FROM Api.Cart
+          WHERE itemFilename = ?
+          AND userID = ?;`,
+          [itemFilename, userID],
+          (err, res, field) => {
+            if (!err) {
+              resolve('done');
+            } else {
+              reject(err);
+            }
+          }
+        );
+      }
+    );
+  },
 
-  getUserCart:()=>{},
+  getUserCart:(Connection, userID)=>{
+    //Get all items that's associated with a user ID in the Api.Cart
+    //table. Returns a promise that resolves to an array of object that
+    //contains three keys, itemFilename, userID and itemCount. The promise
+    //reject to the err object returned by the query callback.
+    return new Promise (
+      (resolve, reject) => {
+        Connection.query(`SELECT * FROM Api.Cart
+          WHERE userID = ?`,
+          [userID],
+          (err, res, field) => {
+            if (!err) {
+            resolve(res);
+            } else {
+              reject(err);
+            }
+          }
+        );
+      }
+    );
+  }
 
 
 }
