@@ -52,12 +52,16 @@ module.exports = {
     );
   },
 
-  addItemToCart: (Connection, itemFilename, userID)=>{
+  addItemToCart: (Connection, itemFilename, userID, itemCount)=>{
+    // Add a new item entry to the database and set its item count
+    // note: each item per user has to be unique otherwise the database will
+    // throw an exception. To change the count of the item, first remove it, then
+    // add it again with the new count
     return new Promise (
       (resolve, reject) => {
-        Connection.query(`INSERT INTO Api.Cart (itemFilename, userID)
-          VALUES (?, ?);`,
-          [itemFilename, userID],
+        Connection.query(`INSERT INTO Api.Cart (itemFilename, userID, itemCount)
+          VALUES (?, ?, ?);`,
+          [itemFilename, userID, itemCount],
           (err, res, field) => {
             if (!err) {
               resolve('done');
