@@ -44,10 +44,12 @@ let init = () => {
     `);
 
   con.query(`
-    CREATE TABLE OrderedItem (
+    CREATE TABLE CheckedOutItem (
       itemFilename varchar(255) NOT NULL,
       orderID int NOT NULL,
-      FOREIGN KEY (orderID) REFERENCES Orders(orderID)
+      itemCount int NOT NULL,
+      FOREIGN KEY (orderID) REFERENCES Orders(orderID),
+      UNIQUE KEY (itemFilename, orderID)
     );
     `);
 
