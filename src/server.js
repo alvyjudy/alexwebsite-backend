@@ -90,6 +90,21 @@ app.post('/api/logout',
   }
 )
 
+app.get("/api/cart",
+  (req, res) => {
+    if (!req.session.user) {
+      res.status(401).send("request not authenticated");
+    } else {
+      sqlAction.getUserCart(sqlCon, req.session.user)
+        .then(
+          (value) => {
+            var jsonStr = JSON.stringify(value);
+            res.status(200).send(jsonStr);
+          }
+        );
+    }
+  }
+);
 
 
 app.listen(process.env.PORT || 3002);
