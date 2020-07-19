@@ -89,17 +89,6 @@ app.post('/api/logout',
     req.session.destroy(()=>{res.send('loggedout')});
   }
 )
-/*
-      .then(
-
-      )
-      .catch(
-        (value) => {
-          console.log("hello");
-          res.status(400).send("error");
-        }
-      );
-*/
 
 
 
