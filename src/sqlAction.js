@@ -21,7 +21,7 @@ module.exports = {
     return new Promise (
       (resolve, reject) => {
         Connection.query(
-          `SELECT passphrase, userID FROM Auth WHERE email = ?`,
+          `SELECT passphrase, userID FROM Api.Auth WHERE email = ?`,
           [email],
           (err, results, fields) => {
             if (results[0].passphrase === passphrase) {
@@ -43,7 +43,7 @@ module.exports = {
           [email, passphrase],
           (err, res, field) => {}
         );
-        Connection.query(`SELECT userID FROM Auth WHERE email = ?`,
+        Connection.query(`SELECT userID FROM Api.Auth WHERE email = ?`,
           [email],
           (error, results, field) => {
             resolve(results[0].userID);
