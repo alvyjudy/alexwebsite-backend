@@ -1,5 +1,16 @@
 # API backend for alex's website
 
+# Getting started
+
+To start developing, first clone this repository. Run ``npm install`` to
+get all the dependencies. Then, download MySQL database and make sure to
+have a `root` account with the password set to `12345678` with authentication
+method set to `mysql_native_password`.
+
+The database needs to be initialized. Run `node scripts/initMySQL.js` to do so.
+
+To start the server, run `node src/server.js` or `npx nodemon src/server.js`
+(the latter will refresh upon code change)
 
 # Note on database
 
