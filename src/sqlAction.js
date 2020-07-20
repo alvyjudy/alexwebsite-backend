@@ -124,7 +124,6 @@ module.exports = {
           WHERE userID = ?`,
           [userID],
           (err, res, field) => {
-            console.log(res);
             if (res && res.length !=0 ) {
               var orderIDs = res.map((obj) => {return obj.orderID;});
               resolve(orderIDs); //this is an array of str, each is an orderID
