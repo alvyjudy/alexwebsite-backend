@@ -143,7 +143,10 @@ module.exports = {
           [userID],
           (err, res, fields) => {
             if (!err) {
-              resolve('created new order for user');
+              Connection.query(`SELECT LAST_INSERT_ID();`,
+              (err, res, fields) => {
+                resolve(res[0]['LAST_INSERT_ID()'].toString())
+              });
             } else {
               reject('failed to create new order');
             }
