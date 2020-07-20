@@ -102,7 +102,7 @@ module.exports = {
     //reject to the err object returned by the query callback.
     return new Promise (
       (resolve, reject) => {
-        Connection.query(`SELECT * FROM Api.Cart
+        Connection.query(`SELECT itemFilename, itemCount FROM Api.Cart
           WHERE userID = ?`,
           [userID],
           (err, res, field) => {
