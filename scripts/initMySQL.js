@@ -36,7 +36,7 @@ let init = () => {
 
   con.query(`
     CREATE TABLE Orders (
-      orderID int NOT NULL AUTO_INCREMENT,
+      orderID int NOT NULL UNIQUE AUTO_INCREMENT,
       userID int NOT NULL,
       PRIMARY KEY (orderID),
       FOREIGN KEY (userID) REFERENCES Auth(userID)
