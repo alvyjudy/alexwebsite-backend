@@ -66,7 +66,7 @@ module.exports = {
             if (!err) {
               resolve('done');
             } else {
-              reject(err);
+              reject("failed to insert value (duplicate maybe?)");
             }
           }
         );
