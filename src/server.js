@@ -152,5 +152,62 @@ app.post("/api/cart",
   }
 );
 
+app.get("/api/orders",
+  authenticate,
+  (req, res) => {
+    sqlAction.getUserOrder(sqlCon, req.session.user)
+    .then(
+      (value) => {
+        var jsonStr = JSON.stringify(value);
+        res.status(200).send(jsonStr);
+      }
+    )
+    .catch(res.send.bind(res));
+  }
+);
+
+
+app.post("/api/orders",
+  authenticate,
+  (req, res) => {
+    sqlAction.addUserOrder(sqlCon, req.session.user)
+    .then(console.log).catch(console.log);
+    res.send(`created order`)
+  }
+
+);
+
+app.get("/api/order",
+  authenticate,
+  express.json(),
+  (req, res) => {
+    sqlAction.getCheckedOutItems(sqlCon, req.body.orderID)
+    .then(
+      (value) => {
+        var jsonStr = JSON.stringify(value);
+        res.status(200).send(jsonStr);
+      }
+    );
+  }
+);
+
+app.post("/api/order",
+  authenticate,
+  express.json(),
+  (req, res) => {
+    var items = req.body.items;
+    items.forEach(
+      (item) => {
+        sqlAction.addItemToCheckedOut(sqlCon,
+          item.itemFilename,
+          req.body.orderID,
+          item.itemCount)
+        .then(console.log).catch(console.log);
+      }
+    );
+    res.send("request received");
+  }
+);
+
 
 app.listen(process.env.PORT || 3002);
