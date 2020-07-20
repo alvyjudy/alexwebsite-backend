@@ -115,7 +115,85 @@ module.exports = {
         );
       }
     );
+  },
+
+  getUserOrder:(Connection, userID)=>{
+    return new Promise (
+      (resolve, reject) => {
+        Connection.query(`SELECT orderID FROM Api.Orders
+          WHERE userID = ?`,
+          [userID],
+          (err, res, field) => {
+            console.log(res);
+            if (res && res.length !=0 ) {
+              var orderIDs = res.map((obj) => {return obj.orderID;});
+              resolve(orderIDs); //this is an array of str, each is an orderID
+            } else {
+              reject("no orders for this user");
+            }
+          }
+        );
+      }
+    );
+  },
+
+  addUserOrder:(Connection, userID) => {
+    return new Promise (
+      (resolve, reject) => {
+        Connection.query(`INSERT INTO Api.Orders (userID) VALUES (?);`,
+          [userID],
+          (err, res, fields) => {
+            if (!err) {
+              resolve('created new order for user');
+            } else {
+              reject('failed to create new order');
+            }
+          }
+        );
+      }
+    )
+  },
+
+  addItemToCheckedOut:(Connection, itemFilename, orderID, itemCount) => {
+    return new Promise (
+      (resolve, reject) => {
+        Connection.query(`INSERT INTO Api.CheckedOutItems
+          (itemFilename, orderID, itemCount)
+          VALUES (?, ?, ?)`,
+          [itemFilename, orderID, itemCount],
+          (err, res, fields) => {
+            if (!err) {
+              resolve("item added to checked out");
+            } else {
+              console.log("err", err);
+              reject("item failed to be added");
+            }
+          }
+        );
+      }
+    )
+  },
+
+  getCheckedOutItems: (Connection, orderID) => {
+    return new Promise (
+      (resolve, reject) => {
+        Connection.query(`SELECT * FROM Api.CheckedOutItems WHERE
+          orderID = ?;`,
+          [orderID],
+          (err, res, fields) => {
+            if (res) {
+              resolve(res);
+            } else {
+              reject("failed to get checked out items");
+            }
+          })
+      }
+    );
   }
+
+
+
+
 
 
 }
