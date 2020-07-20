@@ -1,8 +1,5 @@
 # API backend for alex's website
 
-endpoint: ``HOST/api``
-
-# Reference
 
 # Note on database
 
@@ -34,3 +31,91 @@ let password = process.env.DB_PASS || "pw for local MySQL";
 This repository is connected to google cloud and a new version of the backend
 will be built (service name: "backend") and hosted when a tag matching
 ``^v[0-9]+$`` (e.g. ``v1``, ``v2``, ..., ``v12``) is pushed.
+
+# HTTP Api references
+
+>Note: `Content-type` must be set to `Application/json` for all request body
+
+## API end point
+
+Local development endpoint: `http://localhost:3002/`
+
+Deployment endpoint: `https://`
+
+## `POST /api/login`
+
+Authenticate the user and create a cookie-based session
+
+**request body**: A JSON object with `email` and `passphrase` key and
+corresponding string value:
+```
+{"email':"example@example.com", "passphrase":"123456"}`
+```
+
+## `POST /api/register`
+
+Register a user. Abort if the email already exists.
+
+**Request body**: A JSON object with `email` and `passphrase` key and
+corresponding string value:
+
+```
+{"email':"example@example.com", "passphrase":"123456"}`
+```
+
+## `POST /api/logout`
+
+Delete the cookies and log out the current user
+
+## `GET /api/cart`
+
+Get all the items the current authenticated user has added to the cart
+
+**Response**: An array of `JSON` object
+
+```
+[
+  {"itemFilename":"...", "itemCount":"..."},
+  {"itemFilename":"...", "itemCount":"..."},
+  ...
+]
+```
+
+## `POST /api/cart`
+
+Add or remove items from the shopping cart for the current authenticated user
+
+**Request body**: A `JSON` object with two keys (`toAdd` and `toRemove`),
+each corresponding to
+an array of object to be either added or removed. The array contains the
+object representing individual item, each with a `itemFilename` key. In the
+case of `toAdd`, it also contains the `itemCount` key. Note that the backend
+does not handle duplication and inserting the same item twice will not result
+in its count being incremented. To adjust the count, first remove the item and
+then add the item with desired count. The sql database processes `toRemove`
+first then `toAdd`.
+
+```
+{
+	"toAdd":[
+		{"itemFilename":"file1.png", "itemCount":3},
+		{"itemFilename":"file2.png", "itemCount":1}
+	],
+  "toRemove":[
+    {"itemFilename":"..."},
+    {"itemFilename":"..."}
+  ]
+}
+```
+
+## `GET /api/orders`
+
+Obtain a list of order ID for the currently authenticated user
+
+**Response**: a array of int
+
+## `POST /api/orders`
+
+Create a new order for the currently authenticated user
+
+**Response**: an integer specifying the newly created order
