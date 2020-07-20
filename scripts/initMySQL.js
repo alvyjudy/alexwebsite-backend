@@ -19,23 +19,24 @@ let init = () => {
 
   con.query(`
     CREATE TABLE Auth (
-      userID int NOT NULL AUTO_INCREMENT,
+      userID int NOT NULL AUTO_INCREMENT PRIMARY KEY,
       email varchar(255) NOT NULL UNIQUE,
-      passphrase varchar(255) NOT NULL,
-      PRIMARY KEY (UserID)
+      passphrase varchar(255) NOT NULL
     );`);
 
   con.query(`
     CREATE TABLE Cart (
       itemFilename varchar(255) NOT NULL,
       userID int NOT NULL,
-      FOREIGN KEY (userID) REFERENCES Auth(userID)
+      itemCount int NOT NULL,
+      FOREIGN KEY (userID) REFERENCES Auth(userID),
+      UNIQUE KEY (itemFilename, userID)
     );
   `);
 
   con.query(`
     CREATE TABLE Orders (
-      orderID int NOT NULL AUTO_INCREMENT,
+      orderID int NOT NULL UNIQUE AUTO_INCREMENT,
       userID int NOT NULL,
       PRIMARY KEY (orderID),
       FOREIGN KEY (userID) REFERENCES Auth(userID)
@@ -43,10 +44,12 @@ let init = () => {
     `);
 
   con.query(`
-    CREATE TABLE OrderedItem (
+    CREATE TABLE CheckedOutItems (
       itemFilename varchar(255) NOT NULL,
       orderID int NOT NULL,
-      FOREIGN KEY (orderID) REFERENCES Orders(orderID)
+      itemCount int NOT NULL,
+      FOREIGN KEY (orderID) REFERENCES Orders(orderID),
+      UNIQUE KEY (itemFilename, orderID)
     );
     `);
 

@@ -89,18 +89,125 @@ app.post('/api/logout',
     req.session.destroy(()=>{res.send('loggedout')});
   }
 )
-/*
-      .then(
 
-      )
-      .catch(
-        (value) => {
-          console.log("hello");
-          res.status(400).send("error");
+//Get all items the current authenticated user has that's
+//added to shopping cart. Return the response in the body
+//as a json array of object each comprised of 2 keys:
+//itemFilename, count
+var authenticate = (req, res, next) => {
+  if (req.session.user) {
+    next()
+  } else {
+    res.status(401).send("unauthenticated");
+  }
+};
+
+app.get("/api/cart",
+  authenticate,
+  (req, res) => {
+    sqlAction.getUserCart(sqlCon, req.session.user)
+    .then(
+      (value) => {
+        var jsonStr = JSON.stringify(value);
+        res.status(200).send(jsonStr);
+      }
+    );
+  }
+);
+
+//manipulate the items added to cart by the authenticated
+//user. The request body defines a JSON object with three
+//keys: action, toRemove, toAdd.
+//toRemove and toAdd are two arrays of objects each of which
+//specifying an item to be added to the cart. The item
+//has two keys, itemFilename and itemCount
+app.post("/api/cart",
+  express.json(),
+  authenticate,
+  (req, res) => {
+    var toRemove = req.body.toRemove;
+    var toAdd = req.body.toAdd;
+
+    if (toRemove && toRemove.length !== 0) {
+      toRemove.forEach(
+        (item) => {
+          sqlAction.rmItemFromCart(sqlCon, item.itemFilename,
+            req.session.user).then(console.log).catch(console.log);
         }
       );
-*/
+    }
 
+    if (toAdd && toAdd.length !== 0) {
+      toAdd.forEach(
+        (item) => {
+          if (item) {
+            sqlAction.addItemToCart(sqlCon, item.itemFilename,
+              req.session.user, item.itemCount).then(console.log)
+              .catch(console.log);
+          }
+        }
+      );
+    }
+    res.status(200).send('request received');
+  }
+);
+
+app.get("/api/orders",
+  authenticate,
+  (req, res) => {
+    sqlAction.getUserOrder(sqlCon, req.session.user)
+    .then(
+      (value) => {
+        var jsonStr = JSON.stringify(value);
+        res.status(200).send(jsonStr);
+      }
+    )
+    .catch(res.send.bind(res));
+  }
+);
+
+
+app.post("/api/orders",
+  authenticate,
+  (req, res) => {
+    sqlAction.addUserOrder(sqlCon, req.session.user)
+    .then(console.log).catch(console.log);
+    res.send(`created order`)
+  }
+
+);
+
+app.get("/api/order",
+  authenticate,
+  express.json(),
+  (req, res) => {
+    sqlAction.getCheckedOutItems(sqlCon, req.body.orderID)
+    .then(
+      (value) => {
+        var jsonStr = JSON.stringify(value);
+        res.status(200).send(jsonStr);
+      }
+    );
+  }
+);
+
+app.post("/api/order",
+  authenticate,
+  express.json(),
+  (req, res) => {
+    var items = req.body.items;
+    items.forEach(
+      (item) => {
+        sqlAction.addItemToCheckedOut(sqlCon,
+          item.itemFilename,
+          req.body.orderID,
+          item.itemCount)
+        .then(console.log).catch(console.log);
+      }
+    );
+    res.send("request received");
+  }
+);
 
 
 app.listen(process.env.PORT || 3002);
