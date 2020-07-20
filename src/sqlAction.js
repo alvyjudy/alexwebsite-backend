@@ -124,7 +124,6 @@ module.exports = {
           WHERE userID = ?`,
           [userID],
           (err, res, field) => {
-            console.log(res);
             if (res && res.length !=0 ) {
               var orderIDs = res.map((obj) => {return obj.orderID;});
               resolve(orderIDs); //this is an array of str, each is an orderID
@@ -144,7 +143,10 @@ module.exports = {
           [userID],
           (err, res, fields) => {
             if (!err) {
-              resolve('created new order for user');
+              Connection.query(`SELECT LAST_INSERT_ID();`,
+              (err, res, fields) => {
+                resolve(res[0]['LAST_INSERT_ID()'].toString())
+              });
             } else {
               reject('failed to create new order');
             }

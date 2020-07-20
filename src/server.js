@@ -171,8 +171,7 @@ app.post("/api/orders",
   authenticate,
   (req, res) => {
     sqlAction.addUserOrder(sqlCon, req.session.user)
-    .then(console.log).catch(console.log);
-    res.send(`created order`)
+    .then(res.send.bind(res)).catch(console.log);
   }
 
 );
