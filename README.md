@@ -118,4 +118,38 @@ Obtain a list of order ID for the currently authenticated user
 
 Create a new order for the currently authenticated user
 
-**Response**: an integer specifying the newly created order
+**Response**: an string specifying the newly created order number
+
+## `GET /api/order`
+
+Get a list of items that is associated with a specific order ID
+
+**Request body**: a JSON object with a key `orderID` that correspond to
+a string value
+```
+{"orderID":"12"}
+```
+
+## `POST /api/order`
+
+Add a list of items to an order
+
+**Request body**: a JSON object with two keys. `orderID` specifies the
+order, and `items` corresponds to a JSON array of objects, each representing
+an item, with two keys: `itemFilename` and `itemCount`
+
+```
+{
+    "orderID": 1,
+    "items": [
+        {
+            "itemFilename": "file1.png",
+            "itemCount": 2
+        },
+        {
+            "itemFilename": "file2.png",
+            "itemCount": 3
+        }
+    ]
+}
+```
