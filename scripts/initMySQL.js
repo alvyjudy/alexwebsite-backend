@@ -44,7 +44,7 @@ let init = () => {
     `);
 
   con.query(`
-    CREATE TABLE CheckedOutItem (
+    CREATE TABLE CheckedOutItems (
       itemFilename varchar(255) NOT NULL,
       orderID int NOT NULL,
       itemCount int NOT NULL,
